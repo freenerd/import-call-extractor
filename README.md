@@ -4,7 +4,7 @@ import-call-extractor is a program for extracing calls to imported packages in a
 
 ## Install
 
-    go get github.com/freenerd/
+    go get github.com/freenerd/import-call-extractor
 
 ## Use
 
@@ -14,7 +14,7 @@ For basic usage give the absolute go source file path as first argument. In this
 
 The output goes to STDOUT and is formated as yaml. It looks like this:
 
-```
+```yaml
 flag:
   Parse:
     - /Users/johan/Code/go/src/github.com/freenerd/import-call-extractor/main.go:87:3
