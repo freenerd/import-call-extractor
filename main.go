@@ -20,19 +20,18 @@ func main() {
 		return
 	}
 
+	imports := extractor.Imports{}
+	var err error
+
 	if *file != "" {
-		imports, err := extractor.FileImportCalls(*file)
-		if err != nil {
-			log.Fatal(err)
-			return
-		}
-		extractor.PrintYAML(imports)
+		imports, err = extractor.FileImportCalls(*file)
 	} else if *pkg != "" {
-		imports, err := extractor.PackageImportCalls(*pkg)
-		if err != nil {
-			log.Fatal(err)
-			return
-		}
-		extractor.PrintYAML(imports)
+		imports, err = extractor.PackageImportCalls(*pkg)
 	}
+
+	if err != nil {
+		log.Fatal(err)
+		return
+	}
+	extractor.PrintYAML(imports)
 }

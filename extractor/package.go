@@ -7,13 +7,13 @@ import (
 	"path"
 )
 
-func PackageImportCalls(pkgName string) (map[string]map[string][]string, error) {
+func PackageImportCalls(pkgName string) (Imports, error) {
 	cwd, err := os.Getwd()
 	if err != nil {
 		return nil, fmt.Errorf("failed to get working dir: %s", err)
 	}
 
-	imports := make(map[string]map[string][]string)
+	imports := Imports{}
 	imports, err = processPackage(cwd, pkgName, imports)
 
 	if err != nil {
@@ -23,7 +23,7 @@ func PackageImportCalls(pkgName string) (map[string]map[string][]string, error) 
 	return imports, nil
 }
 
-func processPackage(root, pkgName string, imports map[string]map[string][]string) (map[string]map[string][]string, error) {
+func processPackage(root, pkgName string, imports Imports) (Imports, error) {
 	// read package
 	pkg, err := build.Import(pkgName, root, 0)
 	if err != nil {
@@ -58,7 +58,7 @@ func processPackage(root, pkgName string, imports map[string]map[string][]string
 }
 
 // merge two import maps one merged output map
-func mergeImportMaps(import1, import2 map[string]map[string][]string) map[string]map[string][]string {
+func mergeImportMaps(import1, import2 Imports) Imports {
 	for imp, _ := range import1 {
 		_, present := import2[imp]
 		if present {

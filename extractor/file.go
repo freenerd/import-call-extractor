@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-func FileImportCalls(file string) (map[string]map[string][]string, error) {
+func FileImportCalls(file string) (Imports, error) {
 	v, err := newVisitor(file)
 	if err != nil {
 		return nil, err
@@ -25,18 +25,7 @@ func FileImportCalls(file string) (map[string]map[string][]string, error) {
 }
 
 type visitor struct {
-	// keeping calls grouped by import with each call occurence in an array
-	// example:
-	//   map[
-	//     fmt:map[
-	//       PrintF:[12:32 43:1]
-	//       PrintLn:[10:0]
-	//     ]
-	//     strings:map[
-	//       Replace:[11:10]
-	//     ]
-	//   ]
-	Imports map[string]map[string][]string
+	Imports Imports
 
 	// retain full import paths (see Visit())
 	ImportPaths map[string]string
@@ -54,7 +43,7 @@ func newVisitor(file string) (*visitor, error) {
 	}
 
 	v := visitor{
-		Imports:     make(map[string]map[string][]string),
+		Imports:     Imports{},
 		ImportPaths: make(map[string]string),
 		fileAst:     fileAst,
 		fset:        fset,
@@ -116,7 +105,7 @@ func (v *visitor) Visit(node ast.Node) (w ast.Visitor) {
 	return v
 }
 
-func reconstructImportPaths(imports *map[string]map[string][]string, importPaths map[string]string) (map[string]map[string][]string, error) {
+func reconstructImportPaths(imports *Imports, importPaths map[string]string) (Imports, error) {
 	output := make(map[string]map[string][]string)
 
 	for imp, calls := range *imports {

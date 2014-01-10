@@ -4,7 +4,7 @@ import (
 	"fmt"
 )
 
-func PrintYAML(imports map[string]map[string][]string) {
+func PrintYAML(imports Imports) {
 	for imp, calls := range imports {
 		fmt.Printf("%s:\n", imp)
 
