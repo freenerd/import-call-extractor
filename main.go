@@ -15,7 +15,9 @@ func main() {
 	flag.Parse()
 
 	if *file == "" && *pkg == "" {
-		log.Fatal("need go source file path or go package to continue")
+		log.Printf("need go source file path or go package to continue\n\n")
+		flag.Usage()
+		return
 	}
 
 	if *file != "" {

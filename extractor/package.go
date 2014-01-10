@@ -39,7 +39,7 @@ func processPackage(root, pkgName string, imports map[string]map[string][]string
 	for _, file := range pkg.GoFiles {
 		fileImports, err := FileImportCalls(path.Join(pkg.Dir, file))
 		if err != nil {
-			return nil, fmt.Errorf("failed to in file %s: %s", file, err)
+			return nil, fmt.Errorf("failed in file %s: %s", file, err)
 		}
 
 		imports = mergeImportMaps(imports, fileImports)
