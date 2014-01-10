@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-func GetImportCalls(file string) (map[string]map[string][]string, error) {
+func FileImportCalls(file string) (map[string]map[string][]string, error) {
 	v, err := newVisitor(file)
 	if err != nil {
 		return nil, err
