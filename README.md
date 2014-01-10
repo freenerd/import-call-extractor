@@ -1,6 +1,6 @@
 # import-call-extractor
 
-import-call-extractor is a program for extracing calls to imported packages in a go file
+import-call-extractor is a program to analyze go programs. It extracts calls made to imported packages. It can work either on a single go source file or a go package. On a go package, it will also recursively analyze the imported packages.
 
 ## Install
 
@@ -26,3 +26,12 @@ fmt:
     - /Users/johan/Code/go/src/github.com/freenerd/import-call-extractor/main.go:111:4
     - /Users/johan/Code/go/src/github.com/freenerd/import-call-extractor/main.go:114:5
 ```
+
+To analyze a whole package, call like this:
+
+    import call-extractor github.com/freenerd/import-call-extractor
+
+## Limitations
+
+- In package mode, if a package is imported several times, it will be analyzed again
+- Calls made in a `var` block will not be extracted
