@@ -29,7 +29,11 @@ fmt:
 
 To analyze a whole package, call like this:
 
-    import call-extractor github.com/freenerd/import-call-extractor
+    import-call-extractor -p github.com/freenerd/import-call-extractor
+
+Output can be filtered by specific suspect package calls (TODO: make customizable)
+
+    import-call-extractor -p github.com/freenerd/import-call-extractor -s
 
 ## Limitations
 

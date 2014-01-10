@@ -9,6 +9,7 @@ import (
 var (
 	file = flag.String("f", "", "a go source file to extract calls from")
 	pkg  = flag.String("p", "", "a go package")
+  suspects = flag.Bool("s", false, "filter output through a suspects list")
 )
 
 func main() {
@@ -28,10 +29,18 @@ func main() {
 	} else if *pkg != "" {
 		imports, err = extractor.PackageImportCalls(*pkg)
 	}
-
 	if err != nil {
 		log.Fatal(err)
 		return
 	}
+
+  if *suspects {
+    imports, err = extractor.FilterForSuspectPackages(imports)
+    if err != nil {
+      log.Fatal(err)
+      return
+    }
+  }
+
 	extractor.PrintYAML(imports)
 }
