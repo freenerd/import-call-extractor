@@ -12,7 +12,7 @@ func PrintYAML(imports Imports) {
 			fmt.Printf("  %s:\n", call)
 
 			for _, occurence := range occurences {
-				fmt.Printf("    - %s\n", occurence)
+				fmt.Printf("    - %s\n", occurence.position)
 			}
 		}
 	}

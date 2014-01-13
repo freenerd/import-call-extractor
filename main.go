@@ -25,7 +25,7 @@ func main() {
 	var err error
 
 	if *file != "" {
-		imports, err = extractor.FileImportCalls(*file)
+		imports, err = extractor.FileImportCalls(*file, nil)
 	} else if *pkg != "" {
 		imports, err = extractor.PackageImportCalls(*pkg)
 	}

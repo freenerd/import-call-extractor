@@ -3,13 +3,14 @@ package extractor
 import (
 	"fmt"
 	"go/ast"
+	"go/build"
 	"go/parser"
 	"go/token"
 	"strings"
 )
 
-func FileImportCalls(file string) (Imports, error) {
-	v, err := newVisitor(file)
+func FileImportCalls(file string, pkg *build.Package) (Imports, error) {
+	v, err := newVisitor(file, pkg)
 	if err != nil {
 		return nil, err
 	}
@@ -25,16 +26,14 @@ func FileImportCalls(file string) (Imports, error) {
 }
 
 type visitor struct {
-	Imports Imports
-
-	// retain full import paths (see Visit())
-	ImportPaths map[string]string
-
-	fileAst *ast.File
-	fset    *token.FileSet
+	Imports     Imports
+	ImportPaths ImportPaths // to retain full import paths for display
+	fileAst     *ast.File
+	fset        *token.FileSet
+	pkg         *build.Package
 }
 
-func newVisitor(file string) (*visitor, error) {
+func newVisitor(file string, pkg *build.Package) (*visitor, error) {
 	fset := token.NewFileSet()
 	fileAst, err := parser.ParseFile(fset, file, nil, parser.ParseComments)
 
@@ -47,6 +46,7 @@ func newVisitor(file string) (*visitor, error) {
 		ImportPaths: ImportPaths{},
 		fileAst:     fileAst,
 		fset:        fset,
+		pkg:         pkg,
 	}
 
 	return &v, nil
@@ -70,12 +70,12 @@ func (v *visitor) Visit(node ast.Node) (w ast.Visitor) {
 
 					// a package is locally only referenced by it's name, not by path
 					pathSplit := strings.Split(path, "/")
-					pkgName := pathSplit[len(pathSplit)-1]
+					pkg := pathSplit[len(pathSplit)-1]
 
-					v.Imports[pkgName] = Calls{}
+					v.Imports[pkg] = Calls{}
 
 					// to reconstruct the path from the package names, we save them to importPaths
-					v.ImportPaths[pkgName] = path
+					v.ImportPaths[pkg] = path
 				}
 			}
 		}
@@ -96,8 +96,12 @@ func (v *visitor) Visit(node ast.Node) (w ast.Visitor) {
 					v.Imports[object][call] = Occurences{}
 				}
 
-				position := token.Position.String((v.fset.Position(t.Pos())))
-				v.Imports[object][call] = append(v.Imports[object][call], position)
+				occurence := Occurence{
+					position: token.Position.String((v.fset.Position(t.Pos()))),
+					pkg:      v.pkg,
+				}
+
+				v.Imports[object][call] = append(v.Imports[object][call], occurence)
 			}
 		}
 	}

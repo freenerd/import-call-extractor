@@ -1,5 +1,9 @@
 package extractor
 
+import (
+	"go/build"
+)
+
 // keeping calls grouped by import with each call occurence in an array
 // example:
 //   map[
@@ -13,6 +17,10 @@ package extractor
 //   ]
 type Imports map[string]Calls
 type Calls map[string]Occurences
-type Occurences []string
+type Occurences []Occurence
+type Occurence struct {
+	position string
+	pkg      *build.Package
+}
 
 type ImportPaths map[string]string
