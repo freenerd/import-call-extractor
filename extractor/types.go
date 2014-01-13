@@ -11,4 +11,8 @@ package extractor
 //       Replace:[11:10]
 //     ]
 //   ]
-type Imports map[string]map[string][]string
+type Imports map[string]Calls
+type Calls map[string]Occurences
+type Occurences []string
+
+type ImportPaths map[string]string

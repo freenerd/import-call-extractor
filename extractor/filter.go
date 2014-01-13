@@ -28,7 +28,7 @@ func FilterForSuspectPackages(imports Imports) (Imports, error) {
 		if pkg, ok := imports[splitSuspect[0]]; ok {
 			if calls, ok := pkg[splitSuspect[1]]; ok {
 				if _, present := output[splitSuspect[0]]; !present {
-					output[splitSuspect[0]] = map[string][]string{}
+					output[splitSuspect[0]] = Calls{}
 				}
 
 				output[splitSuspect[0]][splitSuspect[1]] = calls

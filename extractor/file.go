@@ -44,7 +44,7 @@ func newVisitor(file string) (*visitor, error) {
 
 	v := visitor{
 		Imports:     Imports{},
-		ImportPaths: make(map[string]string),
+		ImportPaths: ImportPaths{},
 		fileAst:     fileAst,
 		fset:        fset,
 	}
@@ -72,7 +72,7 @@ func (v *visitor) Visit(node ast.Node) (w ast.Visitor) {
 					pathSplit := strings.Split(path, "/")
 					pkgName := pathSplit[len(pathSplit)-1]
 
-					v.Imports[pkgName] = make(map[string][]string)
+					v.Imports[pkgName] = Calls{}
 
 					// to reconstruct the path from the package names, we save them to importPaths
 					v.ImportPaths[pkgName] = path
@@ -93,7 +93,7 @@ func (v *visitor) Visit(node ast.Node) (w ast.Visitor) {
 			if _, present := v.Imports[object]; present {
 				if _, present = v.Imports[object][call]; !present {
 					// first call, make call occurence array
-					v.Imports[object][call] = make([]string, 0)
+					v.Imports[object][call] = Occurences{}
 				}
 
 				position := token.Position.String((v.fset.Position(t.Pos())))
@@ -105,8 +105,8 @@ func (v *visitor) Visit(node ast.Node) (w ast.Visitor) {
 	return v
 }
 
-func reconstructImportPaths(imports *Imports, importPaths map[string]string) (Imports, error) {
-	output := make(map[string]map[string][]string)
+func reconstructImportPaths(imports *Imports, importPaths ImportPaths) (Imports, error) {
+	output := Imports{}
 
 	for imp, calls := range *imports {
 		path, present := importPaths[imp]
