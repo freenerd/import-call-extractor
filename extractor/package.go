@@ -59,11 +59,11 @@ func processPackage(root, pkgName string, imports Imports) (Imports, error) {
 
 // merge two import maps one merged output map
 func mergeImportMaps(import1, import2 Imports) Imports {
-	for imp, _ := range import1 {
+	for imp := range import1 {
 		_, present := import2[imp]
 		if present {
 			// since import is already there, we have to look at each call's array
-			for call, _ := range import1[imp] {
+			for call := range import1[imp] {
 				_, present := import2[imp][call]
 				if present {
 					// appending each call to call array
