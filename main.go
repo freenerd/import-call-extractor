@@ -4,12 +4,14 @@ import (
 	"flag"
 	"github.com/freenerd/import-call-extractor/extractor"
 	"log"
+	"strings"
 )
 
 var (
 	file     = flag.String("f", "", "a go source file to extract calls from")
 	pkg      = flag.String("p", "", "a go package")
 	suspects = flag.Bool("s", false, "filter output through a suspects list")
+	format   = flag.String("format", "YAML", "format of output. valid values: yaml (default), csv (uniqued list of calling packages, useful with suspect list)")
 )
 
 func main() {
@@ -42,5 +44,14 @@ func main() {
 		}
 	}
 
-	extractor.PrintYAML(imports)
+	format := strings.ToLower(*format)
+	if format == "yaml" {
+		extractor.PrintYAML(imports)
+	} else if format == "csv" {
+		extractor.PrintCSV(imports)
+	} else {
+		log.Printf("unknown format %s\n\n", format)
+		flag.Usage()
+		return
+	}
 }
