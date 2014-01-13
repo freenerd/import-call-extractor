@@ -37,5 +37,17 @@ Output can be filtered by specific suspect package calls (TODO: make customizabl
 
 ## Limitations
 
-- In package mode, if a package is imported several times, it will be analyzed again
-- Calls made in a `var` block will not be extracted
+- It is assumed that all calls are made on the object with the package name string split after last "/". This is a casual convention and not how go imports are actually implemented. Therefore anything exported publicly by a package, that is not within the packages name, will not be detected.
+  - This will be detected: `import "flag"; ...; flag.Parse()`
+  - This will not be detected: `import "flag"; ...; flags := NewFlagSet(...)`
+- In package mode, if a package is imported several times, it will be analyzed each time, resulting in duplicate call occurences
+- Calls made in a `var` block will not be detected
+- Overriding objects will not be respected
+  - `import "fmt"; ...; fmt := "anything";`
+
+## Todo
+
+- How are package renames handled?
+- Handle all publicl exports by a package
+- Regarding finding network connections: Also within the stdlib, try to traceback network connections to `net.Dial`
+
